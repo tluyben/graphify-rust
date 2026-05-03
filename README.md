@@ -33,6 +33,7 @@ graphify update <path>           re-extract without LLM
 graphify cluster-only <path>     rerun clustering on existing graph.json
 graphify merge-graphs <g1> <g2>  merge two graph.json files
 graphify clone <github-url>      clone a repo and graph it
+graphify serve [graph.json]      MCP stdio server (default graphify-out/graph.json)
 graphify benchmark [graph.json]  measure token reduction
 graphify hook install|uninstall  manage git hooks
 graphify tree                    D3 collapsible-tree HTML

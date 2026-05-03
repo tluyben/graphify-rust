@@ -1085,6 +1085,7 @@ fn print_help() {
     println!("    --output HTML           output path (default graphify-out/GRAPH_TREE.html)");
     println!("    --label NAME            project label in header");
     println!("  benchmark [graph.json]  measure token reduction vs naive full-corpus approach");
+    println!("  serve [graph.json]      start MCP stdio server (default graphify-out/graph.json)");
     println!("  hook install            install post-commit/post-checkout git hooks");
     println!("  hook uninstall          remove git hooks");
     println!("  hook status             check if git hooks are installed");
@@ -1343,6 +1344,13 @@ fn main() {
 
         "tree" => cmd_tree(rest),
         "benchmark" => cmd_benchmark(rest),
+        "serve" => {
+            let graph_path = rest.first().map(String::as_str).unwrap_or("graphify-out/graph.json");
+            if let Err(e) = graphify::mcp::serve(graph_path) {
+                eprintln!("error: {}", e);
+                process::exit(1);
+            }
+        }
 
         "merge-graphs" => {
             let mut graph_paths: Vec<PathBuf> = Vec::new();

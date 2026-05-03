@@ -3,6 +3,7 @@ pub mod benchmark;
 pub mod build;
 pub mod cache;
 pub mod cluster;
+pub mod mcp;
 pub mod detect;
 pub mod export;
 pub mod extract;
