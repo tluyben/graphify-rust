@@ -51,7 +51,7 @@ let result = detect(Path::new("."), false);
 
 ## Notes
 
-- MCP server not included — use the Python version for MCP
+- MCP stdio server included (`graphify serve`) — exposes `query_graph`, `get_node`, `get_neighbors`, `get_community`, `god_nodes`, `graph_stats`, `shortest_path`
 - LLM extraction uses Claude Code subagents via the installed skill
 - Video transcription requires `yt-dlp` and `faster-whisper`
 
