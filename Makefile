@@ -7,8 +7,8 @@ LINUX_TARGETS := \
 	aarch64-unknown-linux-musl
 
 WINDOWS_TARGETS := \
-	x86_64-pc-windows-gnu \
-	aarch64-pc-windows-gnullvm
+	x86_64-pc-windows-gnu
+# aarch64-pc-windows-gnullvm: no cross-rs Docker image exists yet; build on Windows with MSVC
 
 MAC_TARGETS := \
 	x86_64-apple-darwin \

@@ -15,7 +15,7 @@ hex = "0.4"
 walkdir = "2"
 globset = "0.4"
 tempfile = "3"
-reqwest = { version = "0.11", features = ["blocking"] }
+reqwest = { version = "0.11", features = ["blocking", "rustls-tls"], default-features = false }
 url = "2"
 ipnetwork = "0.20"
 dns-lookup = "2"

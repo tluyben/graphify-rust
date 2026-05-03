@@ -2,6 +2,7 @@
 #![allow(dead_code)]
 use regex::Regex;
 use std::fs;
+#[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::process::Command;
@@ -222,6 +223,7 @@ fn install_hook(hooks_dir: &Path, name: &str, script: &str, marker: &str) -> Str
     let content = format!("#!/bin/sh\n{}", script);
     fs::write(&hook_path, &content).ok();
     // Set executable permission (rwxr-xr-x = 0o755)
+    #[cfg(unix)]
     if let Ok(metadata) = fs::metadata(&hook_path) {
         let mut perms = metadata.permissions();
         perms.set_mode(0o755);
