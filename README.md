@@ -29,7 +29,8 @@ graphify path "A" "B"            shortest path between two nodes
 graphify explain "X"             explain a node and its neighbors
 graphify add <url>               fetch a URL and add to the graph
 graphify watch <path>            watch and rebuild on file changes
-graphify update <path>           re-extract without LLM
+graphify generate [path]         fresh build from scratch without LLM (detect → AST → cluster → HTML)
+graphify update <path>           re-extract and merge into existing graph without LLM
 graphify cluster-only <path>     rerun clustering on existing graph.json
 graphify merge-graphs <g1> <g2>  merge two graph.json files
 graphify clone <github-url>      clone a repo and graph it

@@ -880,7 +880,7 @@ fn cmd_update(args: &[String]) {
         process::exit(1);
     }
     println!("Re-extracting code files in {} (no LLM needed)...", watch_path.display());
-    let ok = graphify::watch::rebuild_code(&watch_path, false, force);
+    let ok = graphify::watch::rebuild_code(&watch_path, false, force, true);
     if ok {
         println!("Code graph updated. For doc/paper/image changes run /graphify --update in your AI assistant.");
     } else {
@@ -1041,6 +1041,34 @@ fn cmd_tree(args: &[String]) {
     }
 }
 
+fn cmd_generate(args: &[String]) {
+    let path = if !args.is_empty() {
+        PathBuf::from(&args[0])
+    } else {
+        PathBuf::from(".")
+    };
+    let force = args.contains(&"--force".to_string());
+
+    if !path.exists() {
+        eprintln!("error: path not found: {}", path.display());
+        process::exit(1);
+    }
+
+    let abs_path = path.canonicalize().unwrap_or_else(|_| path.clone());
+    println!("Generating assets for {} ...", abs_path.display());
+    let ok = graphify::watch::rebuild_code(&path, false, force, false);
+    if !ok {
+        eprintln!("error: asset generation failed — check output above.");
+        process::exit(1);
+    }
+    let out = path.join("graphify-out");
+    println!();
+    println!("Done. Outputs in {}/", out.display());
+    println!("  graph.json       - raw graph data");
+    println!("  GRAPH_REPORT.md  - audit report");
+    println!("  graph.html       - interactive graph (open in browser)");
+}
+
 // ---------------------------------------------------------------------------
 // Main dispatcher
 // ---------------------------------------------------------------------------
@@ -1064,6 +1092,8 @@ fn print_help() {
     println!("    --contributor \"Name\"    tag who added it to the corpus");
     println!("    --dir <path>            target directory (default: ./raw)");
     println!("  watch <path>            watch a folder and rebuild the graph on code changes");
+    println!("  generate [path]         fresh AST extraction + build + cluster + report + HTML in one shot (no LLM)");
+    println!("    --force                 overwrite even if new graph has fewer nodes");
     println!("  update <path>           re-extract code files and update the graph (no LLM needed)");
     println!("    --force                 overwrite graph.json even if the rebuild has fewer nodes");
     println!("  cluster-only <path>     rerun clustering on an existing graph.json and regenerate report");
@@ -1329,6 +1359,7 @@ fn main() {
             graphify::watch::watch(&watch_path, 3.0).ok();
         }
 
+        "generate" => cmd_generate(rest),
         "update" => cmd_update(rest),
         "cluster-only" => cmd_cluster_only(rest),
 

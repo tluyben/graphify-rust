@@ -93,7 +93,7 @@ fn relativize_source_files(payload: &mut Value, root: &Path) {
 ///
 /// When `force` is `true` the node-count safety check in `to_json` is bypassed.
 /// Returns `true` on success, `false` on error.
-pub fn rebuild_code(watch_path: &Path, follow_symlinks: bool, force: bool) -> bool {
+pub fn rebuild_code(watch_path: &Path, follow_symlinks: bool, force: bool, merge_existing: bool) -> bool {
     let watch_root = match watch_path.canonicalize() {
         Ok(p) => p,
         Err(_) => watch_path.to_path_buf(),
@@ -144,7 +144,7 @@ pub fn rebuild_code(watch_path: &Path, follow_symlinks: bool, force: bool) -> bo
     let out_dir = watch_path.join(OUT_DIR);
     let existing_graph_path = out_dir.join("graph.json");
 
-    if existing_graph_path.exists() {
+    if merge_existing && existing_graph_path.exists() {
         if let Ok(text) = std::fs::read_to_string(&existing_graph_path) {
             if let Ok(existing) = serde_json::from_str::<Value>(&text) {
                 let new_ast_ids: HashSet<String> = result_json
@@ -528,7 +528,7 @@ pub fn watch(watch_path: &Path, debounce_secs: f64) -> std::io::Result<()> {
                 if has_non_code(&batch) {
                     notify_only(watch_path);
                 } else {
-                    rebuild_code(watch_path, false, false);
+                    rebuild_code(watch_path, false, false, true);
                 }
                 // Refresh baseline after rebuild.
                 baseline = collect_mtimes(watch_path);
